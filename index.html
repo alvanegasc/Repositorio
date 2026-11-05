@@ -67,16 +67,6 @@
       box-shadow: inset 28px 25px 80px rgb(255 224 174 / 30%), 0 0 90px rgb(219 99 180 / 22%);
     }
 
-    .planet::after {
-      position: absolute;
-      inset: 18% 0 auto;
-      height: 9px;
-      content: "";
-      background: rgb(255 220 186 / 22%);
-      transform: rotate(-17deg);
-      box-shadow: 0 34px 0 rgb(255 220 186 / 14%), 0 68px 0 rgb(255 220 186 / 10%);
-    }
-
     main {
       z-index: 1;
       width: min(100% - 2rem, 820px);
@@ -84,48 +74,40 @@
       text-align: center;
     }
 
-    .eyebrow {
-      margin: 0 0 .85rem;
-      color: #a9f4d0;
-      font-size: .8rem;
-      font-weight: 800;
-      letter-spacing: .3em;
-      text-transform: uppercase;
-    }
-
-    h1 {
-      margin: 0;
-      color: #fff7df;
-      font-size: clamp(2.6rem, 8vw, 5.8rem);
-      line-height: .98;
-      letter-spacing: -.055em;
-      text-shadow: 0 5px 25px rgb(10 10 30 / 35%);
-    }
-
-    h1 span {
-      display: block;
-      color: #a9f4d0;
-    }
-
-    .subtitle {
-      margin: 1.25rem 0 0;
-      color: #d7d2ef;
-      font-size: clamp(1rem, 2.4vw, 1.2rem);
-    }
-
     .crew {
       display: flex;
       align-items: end;
       justify-content: center;
       gap: clamp(.25rem, 3vw, 2rem);
-      margin: 1.5rem auto 0;
+      margin: 0 auto;
     }
 
     .frog {
+      display: block;
       width: clamp(130px, 26vw, 205px);
-      height: auto;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      cursor: pointer;
       filter: drop-shadow(0 16px 16px rgb(4 4 22 / 35%));
       animation: bob 3.2s ease-in-out infinite;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .frog svg {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+
+    .frog:focus-visible {
+      outline: 3px solid #fff1a8;
+      outline-offset: 6px;
+      border-radius: 45%;
+    }
+
+    .frog:disabled {
+      cursor: default;
     }
 
     .frog:nth-child(2) {
@@ -156,6 +138,65 @@
       opacity: .8;
     }
 
+    .shatter-overlay,
+    .bang-overlay {
+      position: fixed;
+      z-index: 5;
+      inset: 0;
+      overflow: hidden;
+      pointer-events: none;
+    }
+
+    .shatter-overlay {
+      display: grid;
+      grid-template-columns: repeat(var(--columns), 1fr);
+      grid-template-rows: repeat(var(--rows), 1fr);
+    }
+
+    .shard {
+      animation: shatter 950ms cubic-bezier(.45, 0, .9, .4) forwards;
+      background: var(--shard-color);
+      border: 1px solid rgb(255 255 255 / 8%);
+    }
+
+    .bang-overlay {
+      background: radial-gradient(circle at var(--origin-x) var(--origin-y), #fffce5 0, #ffc970 3%, #fa754f 9%, #9f45d0 22%, #241b55 52%, #10132f 78%);
+      animation: bang-fade 1500ms ease-in forwards;
+    }
+
+    .bang-ring {
+      position: absolute;
+      top: var(--origin-y);
+      left: var(--origin-x);
+      width: 5vmin;
+      aspect-ratio: 1;
+      border: 3px solid rgb(255 250 210 / 90%);
+      border-radius: 50%;
+      box-shadow: 0 0 35px 8px rgb(255 189 111 / 70%), inset 0 0 20px rgb(255 255 255 / 60%);
+      transform: translate(-50%, -50%);
+      animation: bang-ring 1100ms cubic-bezier(.1, .6, .3, 1) forwards;
+    }
+
+    .bang-particle {
+      position: absolute;
+      top: var(--origin-y);
+      left: var(--origin-x);
+      width: var(--size);
+      aspect-ratio: 1;
+      border-radius: 50%;
+      background: var(--particle-color);
+      box-shadow: 0 0 12px 3px var(--particle-color);
+      animation: bang-particle 1100ms ease-out forwards;
+    }
+
+    .vanished {
+      background: #080b1b;
+    }
+
+    .vanished .sky {
+      display: none;
+    }
+
     @keyframes bob {
       0%, 100% { transform: translateY(0) rotate(-2deg); }
       50% { transform: translateY(-12px) rotate(2deg); }
@@ -166,10 +207,30 @@
       50% { transform: translate(12px, -10px) rotate(4deg); }
     }
 
+    @keyframes shatter {
+      0% { opacity: 1; transform: translate(0, 0) rotate(0) scale(1); }
+      100% { opacity: 0; transform: translate(var(--dx), var(--dy)) rotate(var(--rotation)) scale(.15); }
+    }
+
+    @keyframes bang-ring {
+      0% { opacity: .95; width: 5vmin; }
+      100% { opacity: 0; width: 180vmax; }
+    }
+
+    @keyframes bang-particle {
+      0% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+      100% { opacity: 0; transform: translate(var(--dx), var(--dy)) scale(0); }
+    }
+
+    @keyframes bang-fade {
+      0%, 65% { opacity: 1; }
+      100% { opacity: 0; }
+    }
+
     @media (max-width: 520px) {
       body, .sky { min-height: 100svh; }
-      main { padding-top: 4rem; }
-      .crew { gap: 0; margin-top: 2rem; }
+      main { padding: 2rem 1rem; }
+      .crew { gap: 0; }
       .frog { width: 31vw; }
       .frog:nth-child(2) { width: 36vw; }
       .ufo { top: 9%; right: 8%; }
@@ -217,12 +278,9 @@
     </svg>
 
     <main>
-      <p class="eyebrow">Una transmisión intergaláctica</p>
-      <h1>Saludos desde <span>el espacio</span></h1>
-      <p class="subtitle">¡La tripulación ranita te manda un croac cósmico!</p>
-
-      <div class="crew" aria-label="Tres ranitas con cascos espaciales">
-        <svg class="frog" viewBox="0 0 200 220" role="img" aria-label="Ranita verde con casco espacial">
+      <div class="crew">
+        <button class="frog" type="button" aria-label="Ranita espacial 1">
+        <svg viewBox="0 0 200 220" aria-hidden="true">
           <ellipse cx="100" cy="202" rx="61" ry="10" fill="#171531" opacity=".3"/>
           <path d="M54 137c-5 25-2 49 8 57 8 7 20 1 24-8l14-30 15 30c5 10 17 15 25 7 9-9 12-32 6-56" fill="#73dc91"/>
           <ellipse cx="100" cy="149" rx="53" ry="45" fill="#80e59a"/>
@@ -242,8 +300,10 @@
           <path d="m81 152 19 14 19-14" fill="#fff1a8" stroke="#e0b858" stroke-width="3" stroke-linejoin="round"/>
           <path d="M91 166v19m18-19v19" stroke="#e8ffff" stroke-width="5"/>
         </svg>
+        </button>
 
-        <svg class="frog" viewBox="0 0 200 220" role="img" aria-label="Ranita capitana con casco espacial">
+        <button class="frog" type="button" aria-label="Ranita espacial 2">
+        <svg viewBox="0 0 200 220" aria-hidden="true">
           <ellipse cx="100" cy="202" rx="61" ry="10" fill="#171531" opacity=".3"/>
           <path d="M54 137c-5 25-2 49 8 57 8 7 20 1 24-8l14-30 15 30c5 10 17 15 25 7 9-9 12-32 6-56" fill="#73dc91"/>
           <ellipse cx="100" cy="149" rx="53" ry="45" fill="#80e59a"/>
@@ -266,8 +326,10 @@
           <path d="M91 166v19m18-19v19" stroke="#e8ffff" stroke-width="5"/>
           <circle cx="100" cy="150" r="5" fill="#ffda76"/>
         </svg>
+        </button>
 
-        <svg class="frog" viewBox="0 0 200 220" role="img" aria-label="Ranita verde con casco espacial">
+        <button class="frog" type="button" aria-label="Ranita espacial 3">
+        <svg viewBox="0 0 200 220" aria-hidden="true">
           <ellipse cx="100" cy="202" rx="61" ry="10" fill="#171531" opacity=".3"/>
           <path d="M54 137c-5 25-2 49 8 57 8 7 20 1 24-8l14-30 15 30c5 10 17 15 25 7 9-9 12-32 6-56" fill="#73dc91"/>
           <ellipse cx="100" cy="149" rx="53" ry="45" fill="#80e59a"/>
@@ -287,8 +349,119 @@
           <path d="m81 152 19 14 19-14" fill="#fff1a8" stroke="#e0b858" stroke-width="3" stroke-linejoin="round"/>
           <path d="M91 166v19m18-19v19" stroke="#e8ffff" stroke-width="5"/>
         </svg>
+        </button>
       </div>
     </main>
   </div>
+  <script>
+    const frogs = [...document.querySelectorAll(".frog")];
+    const outcomes = ["wikipedia", "shatter", "big-bang"];
+
+    for (let index = outcomes.length - 1; index > 0; index--) {
+      const swapIndex = Math.floor(Math.random() * (index + 1));
+      [outcomes[index], outcomes[swapIndex]] = [outcomes[swapIndex], outcomes[index]];
+    }
+
+    function disableFrogs() {
+      frogs.forEach((frog) => {
+        frog.disabled = true;
+      });
+    }
+
+    function vanishAfter(overlay, delay) {
+      window.setTimeout(() => {
+        document.querySelector(".sky").remove();
+        overlay.remove();
+        document.body.classList.add("vanished");
+      }, delay);
+    }
+
+    function shatterPage() {
+      const overlay = document.createElement("div");
+      const columns = Math.ceil(window.innerWidth / 64);
+      const rows = Math.ceil(window.innerHeight / 64);
+      const colors = ["#10132f", "#28265a", "#4b2777", "#d65c89", "#f8a86c", "#80e59a", "#73dc91", "#83d8c0"];
+      overlay.className = "shatter-overlay";
+      overlay.setAttribute("aria-hidden", "true");
+      overlay.style.setProperty("--columns", columns);
+      overlay.style.setProperty("--rows", rows);
+
+      for (let row = 0; row < rows; row++) {
+        for (let column = 0; column < columns; column++) {
+          const shard = document.createElement("div");
+          const x = (column + .5) / columns;
+          const y = (row + .5) / rows;
+          let palette;
+
+          if (y > .55 && x > .45) {
+            palette = colors.slice(3, 5);
+          } else if (y > .5 && x > .15 && x < .85) {
+            palette = colors.slice(5, 7);
+          } else if (y < .42 && (x < .18 || x > .78)) {
+            palette = colors.slice(6, 8);
+          } else {
+            palette = colors.slice(0, 3);
+          }
+
+          shard.className = "shard";
+          shard.style.setProperty("--shard-color", palette[Math.floor(Math.random() * palette.length)]);
+          shard.style.setProperty("--dx", `${(Math.random() - .5) * 260}px`);
+          shard.style.setProperty("--dy", `${(Math.random() - .5) * 260}px`);
+          shard.style.setProperty("--rotation", `${(Math.random() - .5) * 100}deg`);
+          overlay.append(shard);
+        }
+      }
+
+      document.body.append(overlay);
+      document.querySelector(".sky").animate([{ opacity: 1 }, { opacity: 0 }], { duration: 700, fill: "forwards" });
+      vanishAfter(overlay, 1000);
+    }
+
+    function createBigBang(frog) {
+      const overlay = document.createElement("div");
+      const bounds = frog.getBoundingClientRect();
+      const originX = `${bounds.left + bounds.width / 2}px`;
+      const originY = `${bounds.top + bounds.height / 2}px`;
+      const colors = ["#fffce5", "#ffda76", "#ff9466", "#a9f4d0", "#d7b6ff"];
+
+      overlay.className = "bang-overlay";
+      overlay.setAttribute("aria-hidden", "true");
+      overlay.style.setProperty("--origin-x", originX);
+      overlay.style.setProperty("--origin-y", originY);
+
+      const ring = document.createElement("div");
+      ring.className = "bang-ring";
+      overlay.append(ring);
+
+      for (let index = 0; index < 90; index++) {
+        const particle = document.createElement("div");
+        const angle = Math.random() * Math.PI * 2;
+        const distance = Math.max(window.innerWidth, window.innerHeight) * (.35 + Math.random() * .8);
+        particle.className = "bang-particle";
+        particle.style.setProperty("--dx", `${Math.cos(angle) * distance}px`);
+        particle.style.setProperty("--dy", `${Math.sin(angle) * distance}px`);
+        particle.style.setProperty("--size", `${3 + Math.random() * 8}px`);
+        particle.style.setProperty("--particle-color", colors[Math.floor(Math.random() * colors.length)]);
+        overlay.append(particle);
+      }
+
+      document.body.append(overlay);
+      vanishAfter(overlay, 1550);
+    }
+
+    frogs.forEach((frog, index) => {
+      frog.dataset.outcome = outcomes[index];
+      frog.addEventListener("click", () => {
+        disableFrogs();
+        if (frog.dataset.outcome === "wikipedia") {
+          window.location.assign("https://es.wikipedia.org/wiki/Dendrobatidae");
+        } else if (frog.dataset.outcome === "shatter") {
+          shatterPage();
+        } else {
+          createBigBang(frog);
+        }
+      });
+    });
+  </script>
 </body>
 </html>
