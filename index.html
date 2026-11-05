@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#10132f">
+  <title>Saludos desde el espacio</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+      background: #10132f;
+      color: #fff9e8;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      overflow: hidden;
+      background:
+        radial-gradient(ellipse at 50% 110%, #4b2777 0, transparent 48%),
+        radial-gradient(ellipse at 12% 20%, #28265a 0, transparent 38%),
+        #10132f;
+    }
+
+    .sky {
+      position: relative;
+      display: grid;
+      min-height: 100vh;
+      place-items: center;
+      isolation: isolate;
+      overflow: hidden;
+    }
+
+    .stars {
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      background-image:
+        radial-gradient(2px 2px at 8% 18%, #fff 98%, transparent),
+        radial-gradient(1.5px 1.5px at 19% 73%, #ffe994 98%, transparent),
+        radial-gradient(2px 2px at 31% 29%, #fff 98%, transparent),
+        radial-gradient(1px 1px at 43% 13%, #fff 98%, transparent),
+        radial-gradient(2px 2px at 57% 77%, #ffe994 98%, transparent),
+        radial-gradient(1.5px 1.5px at 69% 23%, #fff 98%, transparent),
+        radial-gradient(2px 2px at 82% 61%, #fff 98%, transparent),
+        radial-gradient(1px 1px at 93% 34%, #ffe994 98%, transparent),
+        radial-gradient(1px 1px at 76% 88%, #fff 98%, transparent);
+      background-size: 390px 340px;
+      opacity: .8;
+    }
+
+    .planet {
+      position: absolute;
+      z-index: -1;
+      right: -9rem;
+      bottom: -19rem;
+      width: min(70vw, 710px);
+      aspect-ratio: 1;
+      border: 1px solid rgb(255 255 255 / 24%);
+      border-radius: 50%;
+      background: linear-gradient(145deg, #f8a86c 0%, #d65c89 43%, #542d82 85%);
+      box-shadow: inset 28px 25px 80px rgb(255 224 174 / 30%), 0 0 90px rgb(219 99 180 / 22%);
+    }
+
+    .planet::after {
+      position: absolute;
+      inset: 18% 0 auto;
+      height: 9px;
+      content: "";
+      background: rgb(255 220 186 / 22%);
+      transform: rotate(-17deg);
+      box-shadow: 0 34px 0 rgb(255 220 186 / 14%), 0 68px 0 rgb(255 220 186 / 10%);
+    }
+
+    main {
+      z-index: 1;
+      width: min(100% - 2rem, 820px);
+      padding: 3.5rem 1rem 2rem;
+      text-align: center;
+    }
+
+    .eyebrow {
+      margin: 0 0 .85rem;
+      color: #a9f4d0;
+      font-size: .8rem;
+      font-weight: 800;
+      letter-spacing: .3em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      color: #fff7df;
+      font-size: clamp(2.6rem, 8vw, 5.8rem);
+      line-height: .98;
+      letter-spacing: -.055em;
+      text-shadow: 0 5px 25px rgb(10 10 30 / 35%);
+    }
+
+    h1 span {
+      display: block;
+      color: #a9f4d0;
+    }
+
+    .subtitle {
+      margin: 1.25rem 0 0;
+      color: #d7d2ef;
+      font-size: clamp(1rem, 2.4vw, 1.2rem);
+    }
+
+    .crew {
+      display: flex;
+      align-items: end;
+      justify-content: center;
+      gap: clamp(.25rem, 3vw, 2rem);
+      margin: 1.5rem auto 0;
+    }
+
+    .frog {
+      width: clamp(130px, 26vw, 205px);
+      height: auto;
+      filter: drop-shadow(0 16px 16px rgb(4 4 22 / 35%));
+      animation: bob 3.2s ease-in-out infinite;
+    }
+
+    .frog:nth-child(2) {
+      width: clamp(150px, 31vw, 245px);
+      animation-delay: -1.2s;
+    }
+
+    .frog:nth-child(3) {
+      animation-delay: -2s;
+    }
+
+    .ufo {
+      position: absolute;
+      top: 16%;
+      right: 12%;
+      width: clamp(92px, 15vw, 145px);
+      height: auto;
+      filter: drop-shadow(0 0 18px rgb(120 255 212 / 35%));
+      animation: drift 6s ease-in-out infinite;
+    }
+
+    .ufo-left {
+      top: 32%;
+      right: auto;
+      left: 8%;
+      width: clamp(65px, 10vw, 92px);
+      animation-delay: -3s;
+      opacity: .8;
+    }
+
+    @keyframes bob {
+      0%, 100% { transform: translateY(0) rotate(-2deg); }
+      50% { transform: translateY(-12px) rotate(2deg); }
+    }
+
+    @keyframes drift {
+      0%, 100% { transform: translate(0, 0) rotate(-5deg); }
+      50% { transform: translate(12px, -10px) rotate(4deg); }
+    }
+
+    @media (max-width: 520px) {
+      body, .sky { min-height: 100svh; }
+      main { padding-top: 4rem; }
+      .crew { gap: 0; margin-top: 2rem; }
+      .frog { width: 31vw; }
+      .frog:nth-child(2) { width: 36vw; }
+      .ufo { top: 9%; right: 8%; }
+      .ufo-left { top: 23%; left: 5%; }
+      .planet { right: -45%; bottom: -10rem; width: 110vw; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="sky">
+    <div class="stars" aria-hidden="true"></div>
+    <div class="planet" aria-hidden="true"></div>
+
+    <svg class="ufo" viewBox="0 0 180 110" role="img" aria-label="Nave extraterrestre verde">
+      <path d="M37 69 21 102h16l15-26m76-7 16 33h-16l-15-26" fill="#9cf5c9" opacity=".42"/>
+      <ellipse cx="90" cy="69" rx="76" ry="25" fill="#b9ffe0"/>
+      <ellipse cx="90" cy="63" rx="59" ry="17" fill="#83d8c0"/>
+      <path d="M48 56c3-22 20-37 42-37s39 15 42 37" fill="#86f2dc" stroke="#dcfff2" stroke-width="4"/>
+      <ellipse cx="90" cy="51" rx="30" ry="21" fill="#354a75"/>
+      <circle cx="78" cy="48" r="6" fill="#a8ffe0"/>
+      <circle cx="99" cy="42" r="5" fill="#a8ffe0"/>
+      <circle cx="105" cy="54" r="4" fill="#a8ffe0"/>
+      <circle cx="40" cy="71" r="5" fill="#ffda74"/>
+      <circle cx="137" cy="71" r="5" fill="#ffda74"/>
+      <path d="M60 89h60" stroke="#fff4b8" stroke-linecap="round" stroke-width="4" opacity=".8"/>
+    </svg>
+
+    <svg class="ufo ufo-left" viewBox="0 0 180 110" aria-hidden="true">
+      <path d="M37 69 21 102h16l15-26m76-7 16 33h-16l-15-26" fill="#a8b4ff" opacity=".5"/>
+      <ellipse cx="90" cy="69" rx="76" ry="25" fill="#dbd0ff"/>
+      <ellipse cx="90" cy="63" rx="59" ry="17" fill="#a8a2e8"/>
+      <path d="M48 56c3-22 20-37 42-37s39 15 42 37" fill="#b1c2ff" stroke="#fff" stroke-width="4"/>
+      <ellipse cx="90" cy="51" rx="30" ry="21" fill="#354a75"/>
+      <circle cx="78" cy="48" r="6" fill="#d9fff6"/>
+      <circle cx="99" cy="42" r="5" fill="#d9fff6"/>
+      <circle cx="105" cy="54" r="4" fill="#d9fff6"/>
+    </svg>
+
+    <main>
+      <p class="eyebrow">Una transmisión intergaláctica</p>
+      <h1>Saludos desde <span>el espacio</span></h1>
+      <p class="subtitle">¡La tripulación ranita te manda un croac cósmico!</p>
+
+      <div class="crew" aria-label="Tres ranitas con cascos espaciales">
+        <svg class="frog" viewBox="0 0 200 220" role="img" aria-label="Ranita verde con casco espacial">
+          <ellipse cx="100" cy="202" rx="61" ry="10" fill="#171531" opacity=".3"/>
+          <path d="M54 137c-5 25-2 49 8 57 8 7 20 1 24-8l14-30 15 30c5 10 17 15 25 7 9-9 12-32 6-56" fill="#73dc91"/>
+          <ellipse cx="100" cy="149" rx="53" ry="45" fill="#80e59a"/>
+          <path d="M64 175c-14 3-21 12-19 18 2 6 13 6 25 0m66-18c14 3 21 12 19 18-2 6-13 6-25 0" fill="#80e59a" stroke="#4ab873" stroke-width="4" stroke-linecap="round"/>
+          <ellipse cx="100" cy="81" rx="64" ry="58" fill="#d9fbff" fill-opacity=".2" stroke="#f3ffff" stroke-width="5"/>
+          <path d="M45 75c1-26 24-46 55-46s54 20 55 46" fill="#73dc91"/>
+          <ellipse cx="73" cy="78" rx="12" ry="17" fill="#f3ffdc"/>
+          <ellipse cx="127" cy="78" rx="12" ry="17" fill="#f3ffdc"/>
+          <ellipse cx="76" cy="81" rx="6" ry="9" fill="#26344d"/>
+          <ellipse cx="124" cy="81" rx="6" ry="9" fill="#26344d"/>
+          <ellipse cx="100" cy="103" rx="27" ry="17" fill="#a1eea9"/>
+          <path d="M90 105q10 9 20 0" fill="none" stroke="#31594c" stroke-linecap="round" stroke-width="3"/>
+          <circle cx="59" cy="100" r="6" fill="#ffc5c8" opacity=".8"/>
+          <circle cx="141" cy="100" r="6" fill="#ffc5c8" opacity=".8"/>
+          <path d="M43 120h114" stroke="#d8fbff" stroke-width="7"/>
+          <path d="M53 127h94" stroke="#81cde0" stroke-width="4"/>
+          <path d="m81 152 19 14 19-14" fill="#fff1a8" stroke="#e0b858" stroke-width="3" stroke-linejoin="round"/>
+          <path d="M91 166v19m18-19v19" stroke="#e8ffff" stroke-width="5"/>
+        </svg>
+
+        <svg class="frog" viewBox="0 0 200 220" role="img" aria-label="Ranita capitana con casco espacial">
+          <ellipse cx="100" cy="202" rx="61" ry="10" fill="#171531" opacity=".3"/>
+          <path d="M54 137c-5 25-2 49 8 57 8 7 20 1 24-8l14-30 15 30c5 10 17 15 25 7 9-9 12-32 6-56" fill="#73dc91"/>
+          <ellipse cx="100" cy="149" rx="53" ry="45" fill="#80e59a"/>
+          <path d="M64 175c-14 3-21 12-19 18 2 6 13 6 25 0m66-18c14 3 21 12 19 18-2 6-13 6-25 0" fill="#80e59a" stroke="#4ab873" stroke-width="4" stroke-linecap="round"/>
+          <ellipse cx="100" cy="81" rx="64" ry="58" fill="#d9fbff" fill-opacity=".2" stroke="#f3ffff" stroke-width="5"/>
+          <path d="M45 75c1-26 24-46 55-46s54 20 55 46" fill="#73dc91"/>
+          <path d="M54 63h92" stroke="#ffda76" stroke-width="11" stroke-linecap="round"/>
+          <path d="M96 52h18l-9-15z" fill="#ffda76"/>
+          <ellipse cx="73" cy="81" rx="12" ry="17" fill="#f3ffdc"/>
+          <ellipse cx="127" cy="81" rx="12" ry="17" fill="#f3ffdc"/>
+          <ellipse cx="76" cy="84" rx="6" ry="9" fill="#26344d"/>
+          <ellipse cx="124" cy="84" rx="6" ry="9" fill="#26344d"/>
+          <ellipse cx="100" cy="104" rx="27" ry="17" fill="#a1eea9"/>
+          <path d="M89 104q11 13 22 0" fill="none" stroke="#31594c" stroke-linecap="round" stroke-width="3"/>
+          <circle cx="59" cy="100" r="6" fill="#ffc5c8" opacity=".8"/>
+          <circle cx="141" cy="100" r="6" fill="#ffc5c8" opacity=".8"/>
+          <path d="M43 120h114" stroke="#d8fbff" stroke-width="7"/>
+          <path d="M53 127h94" stroke="#81cde0" stroke-width="4"/>
+          <path d="m81 152 19 14 19-14" fill="#fff1a8" stroke="#e0b858" stroke-width="3" stroke-linejoin="round"/>
+          <path d="M91 166v19m18-19v19" stroke="#e8ffff" stroke-width="5"/>
+          <circle cx="100" cy="150" r="5" fill="#ffda76"/>
+        </svg>
+
+        <svg class="frog" viewBox="0 0 200 220" role="img" aria-label="Ranita verde con casco espacial">
+          <ellipse cx="100" cy="202" rx="61" ry="10" fill="#171531" opacity=".3"/>
+          <path d="M54 137c-5 25-2 49 8 57 8 7 20 1 24-8l14-30 15 30c5 10 17 15 25 7 9-9 12-32 6-56" fill="#73dc91"/>
+          <ellipse cx="100" cy="149" rx="53" ry="45" fill="#80e59a"/>
+          <path d="M64 175c-14 3-21 12-19 18 2 6 13 6 25 0m66-18c14 3 21 12 19 18-2 6-13 6-25 0" fill="#80e59a" stroke="#4ab873" stroke-width="4" stroke-linecap="round"/>
+          <ellipse cx="100" cy="81" rx="64" ry="58" fill="#d9fbff" fill-opacity=".2" stroke="#f3ffff" stroke-width="5"/>
+          <path d="M45 75c1-26 24-46 55-46s54 20 55 46" fill="#73dc91"/>
+          <ellipse cx="73" cy="78" rx="12" ry="17" fill="#f3ffdc"/>
+          <ellipse cx="127" cy="78" rx="12" ry="17" fill="#f3ffdc"/>
+          <ellipse cx="76" cy="81" rx="6" ry="9" fill="#26344d"/>
+          <ellipse cx="124" cy="81" rx="6" ry="9" fill="#26344d"/>
+          <ellipse cx="100" cy="103" rx="27" ry="17" fill="#a1eea9"/>
+          <path d="M90 105q10 9 20 0" fill="none" stroke="#31594c" stroke-linecap="round" stroke-width="3"/>
+          <circle cx="59" cy="100" r="6" fill="#ffc5c8" opacity=".8"/>
+          <circle cx="141" cy="100" r="6" fill="#ffc5c8" opacity=".8"/>
+          <path d="M43 120h114" stroke="#d8fbff" stroke-width="7"/>
+          <path d="M53 127h94" stroke="#81cde0" stroke-width="4"/>
+          <path d="m81 152 19 14 19-14" fill="#fff1a8" stroke="#e0b858" stroke-width="3" stroke-linejoin="round"/>
+          <path d="M91 166v19m18-19v19" stroke="#e8ffff" stroke-width="5"/>
+        </svg>
+      </div>
+    </main>
+  </div>
+</body>
+</html>
