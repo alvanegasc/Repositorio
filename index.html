@@ -36,6 +36,14 @@
       overflow: hidden;
     }
 
+    main {
+      position: static;
+      width: 100%;
+      height: 100vh;
+      padding: 0;
+      pointer-events: none;
+    }
+
     .stars {
       position: absolute;
       inset: 0;
@@ -67,22 +75,17 @@
       box-shadow: inset 28px 25px 80px rgb(255 224 174 / 30%), 0 0 90px rgb(219 99 180 / 22%);
     }
 
-    main {
-      z-index: 1;
-      width: min(100% - 2rem, 820px);
-      padding: 3.5rem 1rem 2rem;
-      text-align: center;
-    }
-
     .crew {
-      display: flex;
-      align-items: end;
-      justify-content: center;
-      gap: clamp(.25rem, 3vw, 2rem);
-      margin: 0 auto;
+      position: fixed;
+      z-index: 2;
+      inset: 0;
+      pointer-events: none;
     }
 
     .frog {
+      position: absolute;
+      top: 50%;
+      left: 50%;
       display: block;
       width: clamp(130px, 26vw, 205px);
       padding: 0;
@@ -90,7 +93,10 @@
       background: transparent;
       cursor: pointer;
       filter: drop-shadow(0 16px 16px rgb(4 4 22 / 35%));
+      translate: -50% -50%;
+      transition: left 2.4s ease-in-out, top 2.4s ease-in-out;
       animation: bob 3.2s ease-in-out infinite;
+      pointer-events: auto;
       -webkit-tap-highlight-color: transparent;
     }
 
@@ -112,21 +118,38 @@
 
     .frog:nth-child(2) {
       width: clamp(150px, 31vw, 245px);
-      animation-delay: -1.2s;
-    }
-
-    .frog:nth-child(3) {
-      animation-delay: -2s;
     }
 
     .ufo {
       position: absolute;
+      z-index: 3;
       top: 16%;
       right: 12%;
       width: clamp(92px, 15vw, 145px);
-      height: auto;
+      padding: 0;
+      border: 0;
+      background: transparent;
       filter: drop-shadow(0 0 18px rgb(120 255 212 / 35%));
       animation: drift 6s ease-in-out infinite;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .ufo svg {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+
+    .ufo:focus-visible,
+    .return-button:focus-visible {
+      outline: 3px solid #fff1a8;
+      outline-offset: 6px;
+      border-radius: 50%;
+    }
+
+    .ufo:disabled {
+      cursor: default;
     }
 
     .ufo-left {
@@ -138,13 +161,83 @@
       opacity: .8;
     }
 
+    .game-over {
+      position: fixed;
+      z-index: 10;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2rem;
+      background: #080711;
+      color: #fff9e8;
+    }
+
+    .game-over[hidden] {
+      display: none;
+    }
+
+    .game-over h1 {
+      margin: 0;
+      font-size: clamp(3rem, 12vw, 7rem);
+      letter-spacing: .06em;
+      text-shadow: 0 0 28px rgb(255 104 126 / 60%);
+    }
+
+    .return-button {
+      display: grid;
+      width: 64px;
+      height: 64px;
+      place-items: center;
+      padding: 0;
+      border: 2px solid #a9f4d0;
+      border-radius: 50%;
+      background: transparent;
+      color: #a9f4d0;
+      cursor: pointer;
+      transition: background-color 180ms ease, color 180ms ease, transform 180ms ease;
+    }
+
+    .return-button:hover {
+      transform: rotate(-35deg);
+      background: #a9f4d0;
+      color: #10132f;
+    }
+
+    .return-button svg {
+      width: 34px;
+      height: 34px;
+    }
+
     .shatter-overlay,
-    .bang-overlay {
+    .bang-overlay,
+    .laser-overlay {
       position: fixed;
       z-index: 5;
       inset: 0;
       overflow: hidden;
       pointer-events: none;
+    }
+
+    .laser-overlay {
+      z-index: 8;
+      background: transparent;
+      animation: blackout-fade 800ms ease-in 450ms forwards;
+    }
+
+    .laser-beam {
+      position: absolute;
+      top: var(--start-y);
+      left: var(--start-x);
+      width: var(--beam-length);
+      height: clamp(5px, .7vw, 10px);
+      border-radius: 50%;
+      background: linear-gradient(to bottom, transparent, #fff 30%, #a9f4ff 50%, #56e6ff 70%, transparent);
+      box-shadow: 0 0 12px 4px #51e4ff, 0 0 32px 10px #50aeff;
+      transform: rotate(var(--beam-angle)) scaleX(0);
+      transform-origin: left center;
+      animation: laser-shot 420ms ease-out forwards;
     }
 
     .shatter-overlay {
@@ -197,6 +290,14 @@
       display: none;
     }
 
+    .blackout {
+      background: #000;
+    }
+
+    .blackout .sky {
+      display: none;
+    }
+
     @keyframes bob {
       0%, 100% { transform: translateY(0) rotate(-2deg); }
       50% { transform: translateY(-12px) rotate(2deg); }
@@ -227,10 +328,18 @@
       100% { opacity: 0; }
     }
 
+    @keyframes laser-shot {
+      0% { transform: rotate(var(--beam-angle)) scaleX(0); }
+      75% { transform: rotate(var(--beam-angle)) scaleX(1.05); }
+      100% { transform: rotate(var(--beam-angle)) scaleX(1); }
+    }
+
+    @keyframes blackout-fade {
+      to { background: #000; }
+    }
+
     @media (max-width: 520px) {
       body, .sky { min-height: 100svh; }
-      main { padding: 2rem 1rem; }
-      .crew { gap: 0; }
       .frog { width: 31vw; }
       .frog:nth-child(2) { width: 36vw; }
       .ufo { top: 9%; right: 8%; }
@@ -244,6 +353,11 @@
         animation-iteration-count: 1 !important;
         scroll-behavior: auto !important;
       }
+
+      .frog,
+      .return-button {
+        transition-duration: .01ms;
+      }
     }
   </style>
 </head>
@@ -252,7 +366,8 @@
     <div class="stars" aria-hidden="true"></div>
     <div class="planet" aria-hidden="true"></div>
 
-    <svg class="ufo" viewBox="0 0 180 110" role="img" aria-label="Nave extraterrestre verde">
+    <button class="ufo" type="button" aria-label="Nave extraterrestre verde">
+    <svg viewBox="0 0 180 110" aria-hidden="true">
       <path d="M37 69 21 102h16l15-26m76-7 16 33h-16l-15-26" fill="#9cf5c9" opacity=".42"/>
       <ellipse cx="90" cy="69" rx="76" ry="25" fill="#b9ffe0"/>
       <ellipse cx="90" cy="63" rx="59" ry="17" fill="#83d8c0"/>
@@ -265,8 +380,10 @@
       <circle cx="137" cy="71" r="5" fill="#ffda74"/>
       <path d="M60 89h60" stroke="#fff4b8" stroke-linecap="round" stroke-width="4" opacity=".8"/>
     </svg>
+    </button>
 
-    <svg class="ufo ufo-left" viewBox="0 0 180 110" aria-hidden="true">
+    <button class="ufo ufo-left" type="button" aria-label="Nave extraterrestre violeta">
+    <svg viewBox="0 0 180 110" aria-hidden="true">
       <path d="M37 69 21 102h16l15-26m76-7 16 33h-16l-15-26" fill="#a8b4ff" opacity=".5"/>
       <ellipse cx="90" cy="69" rx="76" ry="25" fill="#dbd0ff"/>
       <ellipse cx="90" cy="63" rx="59" ry="17" fill="#a8a2e8"/>
@@ -276,6 +393,7 @@
       <circle cx="99" cy="42" r="5" fill="#d9fff6"/>
       <circle cx="105" cy="54" r="4" fill="#d9fff6"/>
     </svg>
+    </button>
 
     <main>
       <div class="crew">
@@ -353,8 +471,18 @@
       </div>
     </main>
   </div>
+  <section class="game-over" aria-labelledby="game-over-title" hidden>
+    <h1 id="game-over-title">GAME OVER</h1>
+    <button class="return-button" type="button" aria-label="Volver a la página principal">
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M3 11a9 9 0 1 1 2.64 6.36M3 5v6h6" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+      </svg>
+    </button>
+  </section>
   <script>
     const frogs = [...document.querySelectorAll(".frog")];
+    const ships = [...document.querySelectorAll(".ufo")];
+    const movementTimers = [];
     const outcomes = ["wikipedia", "shatter", "big-bang"];
 
     for (let index = outcomes.length - 1; index > 0; index--) {
@@ -362,21 +490,58 @@
       [outcomes[index], outcomes[swapIndex]] = [outcomes[swapIndex], outcomes[index]];
     }
 
-    function disableFrogs() {
-      frogs.forEach((frog) => {
+    function stopGame() {
+      [...frogs, ...ships].forEach((frog) => {
         frog.disabled = true;
       });
+      movementTimers.forEach((timer) => {
+        window.clearInterval(timer);
+      });
+    }
+
+    function moveFrog(frog) {
+      const bounds = frog.getBoundingClientRect();
+      const halfWidth = bounds.width / 2;
+      const halfHeight = bounds.height / 2;
+      const minX = halfWidth + 8;
+      const maxX = Math.max(minX, window.innerWidth - halfWidth - 8);
+      const minY = Math.max(halfHeight + 8, window.innerHeight * .15);
+      const maxY = Math.max(minY, window.innerHeight - halfHeight - 8);
+      const otherFrogs = frogs.filter((other) => other !== frog);
+      let x = minX;
+      let y = minY;
+
+      for (let attempt = 0; attempt < 24; attempt++) {
+        x = minX + Math.random() * (maxX - minX);
+        y = minY + Math.random() * (maxY - minY);
+        const separated = otherFrogs.every((other) => {
+          const otherBounds = other.getBoundingClientRect();
+          const otherX = Number.parseFloat(other.style.left);
+          const otherY = Number.parseFloat(other.style.top);
+          const distanceX = (bounds.width + otherBounds.width) * .38;
+          const distanceY = (bounds.height + otherBounds.height) * .38;
+          return Math.hypot((x - otherX) / distanceX, (y - otherY) / distanceY) > 1;
+        });
+
+        if (separated) {
+          break;
+        }
+      }
+
+      frog.style.left = `${x}px`;
+      frog.style.top = `${y}px`;
     }
 
     function vanishAfter(overlay, delay) {
       window.setTimeout(() => {
         document.querySelector(".sky").remove();
         overlay.remove();
-        document.body.classList.add("vanished");
+        document.querySelector(".game-over").hidden = false;
       }, delay);
     }
 
     function shatterPage() {
+      stopGame();
       const overlay = document.createElement("div");
       const columns = Math.ceil(window.innerWidth / 64);
       const rows = Math.ceil(window.innerHeight / 64);
@@ -418,6 +583,7 @@
     }
 
     function createBigBang(frog) {
+      stopGame();
       const overlay = document.createElement("div");
       const bounds = frog.getBoundingClientRect();
       const originX = `${bounds.left + bounds.width / 2}px`;
@@ -449,10 +615,39 @@
       vanishAfter(overlay, 1550);
     }
 
+    function attackWithLaser(ship) {
+      stopGame();
+      const target = frogs[Math.floor(Math.random() * frogs.length)];
+      const shipBounds = ship.getBoundingClientRect();
+      const targetBounds = target.getBoundingClientRect();
+      const startX = shipBounds.left + shipBounds.width / 2;
+      const startY = shipBounds.top + shipBounds.height / 2;
+      const endX = targetBounds.left + targetBounds.width / 2;
+      const endY = targetBounds.top + targetBounds.height / 2;
+      const beam = document.createElement("div");
+      const overlay = document.createElement("div");
+
+      overlay.className = "laser-overlay";
+      overlay.setAttribute("aria-hidden", "true");
+      beam.className = "laser-beam";
+      beam.style.setProperty("--start-x", `${startX}px`);
+      beam.style.setProperty("--start-y", `${startY}px`);
+      beam.style.setProperty("--beam-length", `${Math.hypot(endX - startX, endY - startY)}px`);
+      beam.style.setProperty("--beam-angle", `${Math.atan2(endY - startY, endX - startX)}rad`);
+      overlay.append(beam);
+      document.body.append(overlay);
+
+      window.setTimeout(() => {
+        document.querySelector(".sky").remove();
+        overlay.remove();
+        document.body.classList.add("blackout");
+      }, 1300);
+    }
+
     frogs.forEach((frog, index) => {
       frog.dataset.outcome = outcomes[index];
       frog.addEventListener("click", () => {
-        disableFrogs();
+        stopGame();
         if (frog.dataset.outcome === "wikipedia") {
           window.location.assign("https://es.wikipedia.org/wiki/Dendrobatidae");
         } else if (frog.dataset.outcome === "shatter") {
@@ -461,6 +656,32 @@
           createBigBang(frog);
         }
       });
+    });
+
+    ships.forEach((ship) => {
+      ship.addEventListener("click", attackWithLaser.bind(null, ship));
+    });
+
+    document.querySelector(".return-button").addEventListener("click", () => {
+      window.location.reload();
+    });
+
+    frogs.forEach((frog, index) => {
+      frog.style.transition = "none";
+      frog.style.left = `${window.innerWidth * (index + 1) / (frogs.length + 1)}px`;
+      frog.style.top = `${window.innerHeight * (index === 1 ? .58 : .7)}px`;
+      window.requestAnimationFrame(() => {
+        frog.style.removeProperty("transition");
+      });
+
+      const timer = window.setInterval(() => {
+        moveFrog(frog);
+      }, 2600 + index * 400 + Math.random() * 1300);
+      movementTimers.push(timer);
+    });
+
+    window.addEventListener("resize", () => {
+      frogs.forEach(moveFrog);
     });
   </script>
 </body>
